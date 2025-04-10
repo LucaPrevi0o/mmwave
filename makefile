@@ -1,7 +1,7 @@
 # Compiler
 CC = gcc
 CFLAGS = -o
-FLAGS = -c -w
+FLAGS = -c -w -Wno-incompatible-pointer-types
 
 ODIR = output
 
