@@ -111,10 +111,17 @@ void print_help(parser_t* parser) {
       strcat(buf, ", ");
     }
     if (argc->opt->argl != NULL) strcat(buf, argc->opt->argl);
-    printf("    %-30s ", buf);
+    printf("    %-18s ", buf);
     printf("%s \n", argc->opt->help);
     argc = (arg_t*)argc->next;
   }
+  printf("\n");
+
+  printf("--- --- --- --- --- ---\n\n");
+  printf("TOML config files\n\n");
+  printf("TOML config files are used to define capture parameters for the TDA. ");
+  printf("The TOML format uses key-value pairs\nto define the parameters; in a configuration ");
+  printf("file, definition for profiles, chirps and frams for every\ndevice should be present.");
   printf("\n");
 }
 

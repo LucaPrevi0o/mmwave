@@ -489,9 +489,6 @@ int main (int argc, char *argv[]) {
   unsigned char default_ip_addr[] = "192.168.33.180";
   unsigned int default_port = 5001U;
   unsigned char capture_path[128];
-  printf("Capture path: %s\n", capture_path);
-  printf("Default IP address: %s - ", default_ip_addr);
-  printf("Default port: %u\n", default_port);
   strcpy(capture_path, "/mnt/ssd/");  // Root capture path
   unsigned char default_capture_directory[64];
   sprintf(default_capture_directory, "%s_%lu", "MMWL_Capture", (unsigned long int)time(NULL));
@@ -510,7 +507,7 @@ int main (int argc, char *argv[]) {
   option_t opt_capturedir = {
     .args = "-d",
     .argl = "--capture-dir",
-    .help = "Name of the director where to store recordings on the DSP board",
+    .help = "Name of the director where to store recordings on the DSP board. Default: 'MMWL_Capture_<timestamp>'",
     .type = OPT_STR,
     .default_value = default_capture_directory
   };
@@ -519,7 +516,7 @@ int main (int argc, char *argv[]) {
   option_t opt_port = {
     .args = "-p",
     .argl = "--port",
-    .help = "Port number the DSP board server app is listening on",
+    .help = "Port number the DSP board server app is listening on. Default: 5001",
     .type = OPT_INT,
     .default_value = &default_port,
   };
@@ -528,7 +525,7 @@ int main (int argc, char *argv[]) {
   option_t opt_ipaddr = {
     .args = "-i",
     .argl = "--ip-addr",
-    .help = "IP Address of the MMWCAS DSP evaluation module",
+    .help = "IP Address of the MMWCAS DSP evaluation module. Default: '192.168.33.180'",
     .type = OPT_STR,
     .default_value = default_ip_addr,
   };
@@ -562,7 +559,7 @@ int main (int argc, char *argv[]) {
   option_t opt_config_file = {
     .args = "-f",
     .argl = "--cfg",
-    .help = "TOML Configuration file. Overwrite the default config when provided",
+    .help = "TOML config file (see 'TOML config files' for details). Overwrite the default config when provided",
     .type = OPT_STR,
     .default_value = NULL,
   };
@@ -581,8 +578,7 @@ int main (int argc, char *argv[]) {
   option_t opt_version = {
     .args = "-v",
     .argl = "--version",
-    .help = "Print program version and exit.",
-    .type = OPT_BOOL,
+    .help = "Print program version and exit.",    .type = OPT_BOOL,
     .callback = print_version,
   };
   add_arg(&parser, &opt_version);
