@@ -483,15 +483,20 @@ void signal_handler () {
  * @return int 
  */
 int main (int argc, char *argv[]) {
+
+  printf("mmWave EVM CLI Interface - Linux v1.0\n");
   DEBUG_PRINT("MMWave EVM configuration and control application\n");
   unsigned char default_ip_addr[] = "192.168.33.180";
   unsigned int default_port = 5001U;
   unsigned char capture_path[128];
+  printf("Capture path: %s\n", capture_path);
+  printf("Default IP address: %s - ", default_ip_addr);
+  printf("Default port: %u\n", default_port);
   strcpy(capture_path, "/mnt/ssd/");  // Root capture path
   unsigned char default_capture_directory[64];
   sprintf(default_capture_directory, "%s_%lu", "MMWL_Capture", (unsigned long int)time(NULL));
   int status = 0;
-  float default_recording_duration = 1.0;   // min
+  float default_recording_duration = 30.0;   // seconds
 
   parser_t parser = init_parser(
     PROG_NAME,
@@ -548,7 +553,7 @@ int main (int argc, char *argv[]) {
   option_t opt_record_duration = {
     .args = "-t",
     .argl = "--time",
-    .help = "Indicate how long the recording should last in minutes. Default: 1 min",
+    .help = "Indicate how long the recording should last in seconds. Default: 30 seconds",
     .type = OPT_FLOAT,
     .default_value = &default_recording_duration,
   };
@@ -601,7 +606,7 @@ int main (int argc, char *argv[]) {
    */
   unsigned char *record = (unsigned char*)get_option(&parser, "record");
   float record_duration = *(float*)get_option(&parser, "time");
-  record_duration *= 60 * 1000;  // convert into milliseconds
+  record_duration *= 1000;  // convert into milliseconds
 
   unsigned char *config_filename = (unsigned char*)get_option(&parser, "cfg");
 
