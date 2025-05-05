@@ -474,35 +474,19 @@ void signal_handler () {
   exit(1);
 }
 
+// Default configuration
+unsigned char default_ip_addr[] = "192.168.33.180";
+unsigned int default_port = 5001U;
+unsigned char capture_path[128];
+unsigned char default_capture_directory[64];
+float default_recording_duration = 30.0;   // seconds
 
 /**
- * @brief Application entry point
- * 
- * @param argc 
- * @param argv 
- * @return int 
+ * @brief Set command line arguments
+ *
+ * @param parser Pointer to the parser
  */
-int main (int argc, char *argv[]) {
-
-  printf("mmWave EVM CLI Interface - Linux v1.0\n");
-  DEBUG_PRINT("MMWave EVM configuration and control application\n");
-  unsigned char default_ip_addr[] = "192.168.33.180";
-  unsigned int default_port = 5001U;
-  unsigned char capture_path[128];
-  strcpy(capture_path, "/mnt/ssd/");  // Root capture path
-  unsigned char default_capture_directory[64];
-  sprintf(default_capture_directory, "%s_%lu", "MMWL_Capture", (unsigned long int)time(NULL));
-  int status = 0;
-  float default_recording_duration = 30.0;   // seconds
-
-  parser_t parser = init_parser(
-    PROG_NAME,
-    "Configuration and control tool for TI MMWave cascade Evaluation Module"
-  );
-  g_parser = &parser;
-
-  atexit(cleanup);  // Call the cleanup function before exiting the program
-  signal(SIGINT, signal_handler);  // Catch CTRL+C to enable memory deallocation
+void set_cmd_args(parser_t *parser) {
 
   option_t opt_capturedir = {
     .args = "-d",
@@ -582,7 +566,36 @@ int main (int argc, char *argv[]) {
     .callback = print_version,
   };
   add_arg(&parser, &opt_version);
+}
 
+/**
+ * @brief Application entry point
+ * 
+ * @param argc 
+ * @param argv 
+ * @return int 
+ */
+int main (int argc, char *argv[]) {
+
+  printf("mmWave EVM CLI Interface - Linux v1.0\n");
+  DEBUG_PRINT("MMWave EVM configuration and control application\n");
+
+  strcpy(capture_path, "/mnt/ssd/");  // Root capture path
+  sprintf(default_capture_directory, "%s_%lu", "MMWL_Capture", (unsigned long int)time(NULL));
+
+  int status = 0;
+
+  parser_t parser = init_parser(
+    PROG_NAME,
+    "Configuration and control tool for TI MMWave cascade Evaluation Module"
+  );
+  g_parser = &parser;
+
+  atexit(cleanup);  // Call the cleanup function before exiting the program
+  signal(SIGINT, signal_handler);  // Catch CTRL+C to enable memory deallocation
+
+  // Set command line arguments and parse
+  set_cmd_args(&parser);
   parse(&parser, argc, argv);
 
   // Print help
@@ -595,6 +608,7 @@ int main (int argc, char *argv[]) {
   unsigned int port = *(unsigned int*)get_option(&parser, "port");
   unsigned char *capture_directory = (unsigned char*)get_option(&parser, "capture-dir");
   strcat(capture_path, capture_directory);
+  
   /* Record CLI option possible values are:
    *  - start: To start a recording and exit
    *  - stop: Stop a recording and exit
