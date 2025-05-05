@@ -2547,23 +2547,17 @@ int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, uint8_t deviceMap) {
  * @return int 
  */
 int MMWL_AssignDeviceMap(unsigned char deviceMap, uint8_t* masterMap, uint8_t* slavesMap) {
-  int retVal = RL_RET_CODE_OK;
-  unsigned char devId = 0;
-  *slavesMap = 0;
 
-  if ((deviceMap & 1) == 0) {
-    return RL_RET_CODE_INVALID_INPUT;
-  }
+  int retVal = RL_RET_CODE_OK; // Default return value
+  *slavesMap = 0; // Default slaves map
 
-  // ID 0: master
-  *masterMap = 1;
+  if ((deviceMap & 1) == 0) return RL_RET_CODE_INVALID_INPUT; // Check if deviceMap is valid
+  
+  *masterMap = 1; // Set master map to 1 (master device)
 
   // ID 1-3: slaves
-  for (devId = 1; devId < 4; devId++) {
-    if ((deviceMap & (1 << devId)) != 0) {
-      *slavesMap |= (1 << devId);
-    }
-  }
+  for (unsigned char devId = 1; devId < 4; devId++)
+    if ((deviceMap & (1 << devId)) != 0) *slavesMap |= (1 << devId);
 
   return retVal;
 }
