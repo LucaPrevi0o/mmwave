@@ -122,12 +122,6 @@ typedef struct cli_option {
  * The arguments will be organized in a linked list structure
  */
 typedef struct cli_arg {
-  /**
-   * @brief CLI Argument preceding it.
-   *
-   * The value will be NULL of no argument comes before it 
-   */
-  void *previous;
 
   /**
    * @brief Definition of the CLI option
@@ -145,7 +139,7 @@ typedef struct cli_arg {
    * @brief Next CLI Argument it's chained to
    * 
    */
-  void *next;
+  struct cli_arg *next;
 } arg_t;
 
 
@@ -180,11 +174,6 @@ typedef struct cli_parser {
    */
   arg_t *first_arg;
 
-  /**
-   * @brief Pointer to the last CLI arguments the parser is attached to
-   */
-  arg_t *last_arg;
-
 } parser_t;
 
 
@@ -193,7 +182,7 @@ parser_t init_parser(const char *name, const char *description);
 void free_parser(parser_t *parser);
 
 /** Add new CLI option to the parser */
-int add_arg(parser_t *parser, option_t *option);
+parser_t add_arg(parser_t parser, option_t *option);
 
 /** Parse arguments */
 int parse(parser_t *parser, int argc, char* argv[]);

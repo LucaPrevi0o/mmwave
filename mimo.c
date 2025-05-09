@@ -486,25 +486,22 @@ float default_recording_duration = 30.0;   // seconds
  *
  * @param parser Pointer to the parser
  */
-void set_cmd_args(parser_t *parser) {
+parser_t set_cmd_args() {
+
+  parser_t parser = {
+    .name = PROG_NAME,
+    .description = "Configuration and control tool for TI MMWave cascade Evaluation Module",
+    .first_arg = NULL,
+  };
 
   option_t opt_capturedir = {
     .args = "-d",
     .argl = "--capture-dir",
     .help = "Name of the director where to store recordings on the DSP board. Default: 'MMWL_Capture_<timestamp>'",
     .type = OPT_STR,
-    .default_value = default_capture_directory
+    .default_value = default_capture_directory,
   };
-  add_arg(&parser, &opt_capturedir);
-
-  option_t opt_port = {
-    .args = "-p",
-    .argl = "--port",
-    .help = "Port number the DSP board server app is listening on. Default: 5001",
-    .type = OPT_INT,
-    .default_value = &default_port,
-  };
-  add_arg(&parser, &opt_port);
+  parser = add_arg(parser, &opt_capturedir);
 
   option_t opt_ipaddr = {
     .args = "-i",
@@ -513,7 +510,16 @@ void set_cmd_args(parser_t *parser) {
     .type = OPT_STR,
     .default_value = default_ip_addr,
   };
-  add_arg(&parser, &opt_ipaddr);
+  parser = add_arg(parser, &opt_ipaddr);
+
+  option_t opt_port = {
+    .args = "-p",
+    .argl = "--port",
+    .help = "Port number the DSP board server app is listening on. Default: 5001",
+    .type = OPT_INT,
+    .default_value = &default_port,
+  };
+  parser = add_arg(parser, &opt_port);
 
   option_t opt_config = {
     .args = "-c",
@@ -521,7 +527,7 @@ void set_cmd_args(parser_t *parser) {
     .help = "Configure the MMWCAS-RF-EVM board",
     .type = OPT_BOOL,
   };
-  add_arg(&parser, &opt_config);
+  parser = add_arg(parser, &opt_config);
 
   option_t opt_record = {
     .args = "-r",
@@ -529,7 +535,7 @@ void set_cmd_args(parser_t *parser) {
     .help = "Trigger data recording. This assumes that configuration is completed.",
     .type = OPT_BOOL,
   };
-  add_arg(&parser, &opt_record);
+  parser = add_arg(parser, &opt_record);
 
   option_t opt_record_duration = {
     .args = "-t",
@@ -538,7 +544,7 @@ void set_cmd_args(parser_t *parser) {
     .type = OPT_FLOAT,
     .default_value = &default_recording_duration,
   };
-  add_arg(&parser, &opt_record_duration);
+  parser = add_arg(parser, &opt_record_duration);
 
   option_t opt_config_file = {
     .args = "-f",
@@ -547,7 +553,7 @@ void set_cmd_args(parser_t *parser) {
     .type = OPT_STR,
     .default_value = NULL,
   };
-  add_arg(&parser, &opt_config_file);
+  parser = add_arg(parser, &opt_config_file);
 
   option_t opt_help = {
     .args = "-h",
@@ -557,15 +563,18 @@ void set_cmd_args(parser_t *parser) {
     .default_value = NULL,
     .callback = help,
   };
-  add_arg(&parser, &opt_help);
+  parser = add_arg(parser, &opt_help);
 
   option_t opt_version = {
     .args = "-v",
     .argl = "--version",
-    .help = "Print program version and exit.",    .type = OPT_BOOL,
+    .help = "Print program version and exit.",
+    .type = OPT_BOOL,
     .callback = print_version,
   };
-  add_arg(&parser, &opt_version);
+  parser = add_arg(parser, &opt_version);
+
+  return parser;
 }
 
 /**
@@ -578,45 +587,42 @@ void set_cmd_args(parser_t *parser) {
 int main (int argc, char *argv[]) {
 
   printf("mmWave EVM CLI Interface - Linux v1.0\n");
-  DEBUG_PRINT("MMWave EVM configuration and control application\n");
+  //DEBUG_PRINT("MMWave EVM configuration and control application\n");
 
   strcpy(capture_path, "/mnt/ssd/");  // Root capture path
   sprintf(default_capture_directory, "%s_%lu", "MMWL_Capture", (unsigned long int)time(NULL));
 
   int status = 0;
-
-  parser_t parser = init_parser(
-    PROG_NAME,
-    "Configuration and control tool for TI MMWave cascade Evaluation Module"
-  );
+  parser_t parser = set_cmd_args();  // Set command line arguments
   g_parser = &parser;
 
   atexit(cleanup);  // Call the cleanup function before exiting the program
   signal(SIGINT, signal_handler);  // Catch CTRL+C to enable memory deallocation
 
   // Set command line arguments and parse
-  set_cmd_args(&parser);
+  printf("\n");
+
+  int count=0;
+  for (arg_t* arg = parser.first_arg; arg != NULL && arg->opt != NULL; arg = arg->next) 
+    if (arg->opt->args==NULL || arg->opt->argl==NULL) printf("at arg %d something not working\n", count);
+    else printf("Arg: %s | %s\nTot args: %d\n", arg->opt->args, arg->opt->argl, count++);
+  printf("Total valid arguments: %d\n", count);
+  
   parse(&parser, argc, argv);
 
-  // Print help
   if ((unsigned char*)get_option(&parser, "help") != NULL) {
-    print_help(&parser);
-    exit(0);
+
+    print_help(&parser); // Print help message
+    exit(0); // Exit the program
   }
 
   unsigned char *ip_addr = (unsigned char*)get_option(&parser, "ip-addr");
   unsigned int port = *(unsigned int*)get_option(&parser, "port");
   unsigned char *capture_directory = (unsigned char*)get_option(&parser, "capture-dir");
   strcat(capture_path, capture_directory);
-  
-  /* Record CLI option possible values are:
-   *  - start: To start a recording and exit
-   *  - stop: Stop a recording and exit
-   *  - oneshot: Start a recording, wait for it's complemention and stop it.
-   */
-  unsigned char *record = (unsigned char*)get_option(&parser, "record");
-  float record_duration = *(float*)get_option(&parser, "time");
-  record_duration *= 1000;  // convert into milliseconds
+
+  unsigned char *record = (unsigned char*)get_option(&parser, "record"); // Get option for recording 
+  float record_duration = *(float*)get_option(&parser, "time") * 1000; // in ms
 
   unsigned char *config_filename = (unsigned char*)get_option(&parser, "cfg");
 
@@ -624,7 +630,7 @@ int main (int argc, char *argv[]) {
   devConfig_t config;
 
   /*  Device map:  master | slave 1  | slave 2  | slave 3 */
-  config.deviceMap =  1   | (1 << 1) | (1 << 2) | (1 << 3);
+  config.deviceMap =  1   ; // | (1 << 1) | (1 << 2) | (1 << 3)
   MMWL_AssignDeviceMap(config.deviceMap, &config.masterMap, &config.slavesMap);
 
   config.frameCfg = frameCfgArgs;
