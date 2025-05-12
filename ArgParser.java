@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 /**
  * ArgParser.java
  * Argument parser for command line applications.
@@ -13,7 +15,7 @@ public class ArgParser {
      * It contains information about the argument, such as its name,
      * type, default value, and whether it has been set.
      */
-    public class Argument {
+    public class Argument implements Iterable<Argument> {
 
         /**
          * Type enum represents the different types of command line arguments.
@@ -21,10 +23,19 @@ public class ArgParser {
          */
         public enum Type {
 
-            STRING,
-            INTEGER,
-            FLOAT,
-            BOOLEAN
+            STRING, INTEGER, FLOAT, BOOLEAN;
+
+            public String toString() {
+
+                switch (this) { // Return the string representation of the type
+
+                    case STRING: return "STRING";
+                    case INTEGER: return "INTEGER";
+                    case FLOAT: return "FLOAT";
+                    case BOOLEAN: return "BOOLEAN";
+                    default: return "UNKNOWN";
+                }
+            }
         }
 
         /**
@@ -80,6 +91,25 @@ public class ArgParser {
         public Object getDefaultValue() { return this.cliOption.defaultValue; } // Get the default value of the option
 
         public void setDefaultValue(Object defaultValue) { this.cliOption.defaultValue = defaultValue; } // Set the default value of the option
+
+        @Override
+        public Iterator<ArgParser.Argument> iterator() {
+            
+            return new Iterator<Argument>() { // Create an iterator for the Argument class
+
+                private Argument current = head; // Start from the head of the list
+
+                @Override
+                public boolean hasNext() { return current != null; } // Check if there is a next argument
+
+                @Override
+                public Argument next() { // Get the next argument
+                    Argument temp = current;
+                    current = current.next;
+                    return temp;
+                }
+            };
+        }
     }
 
     private String name;
@@ -117,6 +147,7 @@ public class ArgParser {
 
         Argument current = head; // Start from the head of the list
         while (current != null) { // Traverse the list
+
             if (current.cliOption.args.equals(args)) return current; // Return the argument if found
             current = current.next; // Move to the next argument
         }
@@ -141,17 +172,38 @@ public class ArgParser {
 
                     switch (argument.getType()) { // Set the value based on the type
                         case STRING:
+
+                            argument.setDefaultValue(args[i + 1]); // Set the default value to the next argument
                             break;
                         case INTEGER:
+
+                            try {
+                                argument.setDefaultValue(Integer.parseInt(args[i + 1])); // Set the default value to the next argument as an integer
+                            } catch (NumberFormatException e) {
+                                throw new IllegalArgumentException("Invalid integer value: " + args[i + 1]); // Print error message if parsing fails
+                                //System.err.println("Invalid integer value: " + args[i + 1]); // Print error message if parsing fails
+                            }
                             break;
                         case FLOAT:
+
+                            try {
+                                argument.setDefaultValue(Float.parseFloat(args[i + 1])); // Set the default value to the next argument as a float
+                            } catch (NumberFormatException e) {
+                                throw new IllegalArgumentException("Invalid float value: " + args[i + 1]); // Print error message if parsing fails
+                                //System.err.println("Invalid float value: " + args[i + 1]); // Print error message if parsing fails
+                            }
                             break;
                         default:
-                            break;
+
+                            throw new IllegalArgumentException("Unknown argument type: " + argument.getType()); // Print error message for unknown type
+                            //System.err.println("ERROR: Unknown argument type: " + argument.getType()); // Print error message for unknown type
+                            //break;
                     }
                     i++; // Move to the next argument
+                } else {
+                    throw new IllegalArgumentException("Missing value for argument: " + args[i]); // Throw exception for missing value
                 }
-            }
+            } else System.err.println("WARNING: Unknown argument: " + args[i]); // Print error message if the argument is not found
         }
     }
 

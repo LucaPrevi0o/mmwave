@@ -1,12 +1,15 @@
 public class Main {
 
-    private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture";
+    private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture_" + System.currentTimeMillis();
     private final static String DEFAULT_IP_ADDR = "192.168.33.180";
     private final static int DEFAULT_PORT = 5001;
     private final static int DEFAULT_RECORD_TIME = 30;
 
     private static final ArgParser argParser = new ArgParser("mmWave", "1.0", "mmWave CLI");
 
+    /**
+     * Set the command line arguments for the mmWave CLI.
+     */
     private static void setArgs() {
 
         argParser.addArgument("-d", "--capture-dir", "Name of the director where to store recordings on the DSP board. Default: 'MMWL_Capture_<timestamp>'", ArgParser.Argument.Type.STRING);
@@ -28,8 +31,32 @@ public class Main {
         argParser.addArgument("-v", "--version", "Print program version and exit.", ArgParser.Argument.Type.BOOLEAN);
     }
 
+    /**
+     * Print the help message for the command line arguments.
+     */
+    private static void printHelp() {
+
+        System.out.println(argParser.getName() + " - Version " + argParser.getVersion()); // Print the name and version of the application
+        System.out.println(argParser.getDescription() + "\n"); // Print the description of the application
+        System.out.println("Options:");
+        for (ArgParser.Argument argument : argParser.getHead()) { // Iterate through the list of arguments
+
+            System.out.print("  " + argument.getArgs() + " | " + argument.getArgl()); // Print the argument names
+            for (int i = argument.getArgs().length() + argument.getArgl().length() ; i < 20; i++) System.out.print(" "); // Print spaces for alignment
+            System.out.println(argument.getHelp()); // Print the help message for the argument
+        }
+        System.exit(0); // Exit the program after printing help
+    }
+
+    /**
+     * Application entry point.
+     * @param args Command line arguments
+     * @throws Exception If an error occurs during execution
+     */
     public static void main(String... args) {
 
         Main.setArgs(); // Set the command line arguments
+        argParser.parse(args); // Parse the command line arguments
+        if (argParser.getArgument("-h").isSet()) Main.printHelp(); // Print help message
     }
 }
