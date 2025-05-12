@@ -2543,15 +2543,21 @@ int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, uint8_t deviceMap) {
 
 /**
  * @brief Assign device map
- * 
+ * @param deviceMap the input map for the activated devices
+ * @param masterMap the map for the master device to be returned
+ * @param slavesMap the map for the slave devices to be returned
+ * @note The first device (ID 0) in the map must be the master device. It should always be set.
  * @return int 
  */
 int MMWL_AssignDeviceMap(unsigned char deviceMap, uint8_t* masterMap, uint8_t* slavesMap) {
-  int retVal = RL_RET_CODE_OK;
-  unsigned char devId = 0;
-  *slavesMap = 0;
 
-  if ((deviceMap & 1) == 0) {
+  int retVal = RL_RET_CODE_OK; // default return code
+  unsigned char devId = 0; // device ID
+  *slavesMap = 0; //returned map
+
+  if ((deviceMap & 1) == 0) { // check input device map for master
+
+    printf("ERROR: First device is not set\n");
     return RL_RET_CODE_INVALID_INPUT;
   }
 
@@ -2559,11 +2565,8 @@ int MMWL_AssignDeviceMap(unsigned char deviceMap, uint8_t* masterMap, uint8_t* s
   *masterMap = 1;
 
   // ID 1-3: slaves
-  for (devId = 1; devId < 4; devId++) {
-    if ((deviceMap & (1 << devId)) != 0) {
-      *slavesMap |= (1 << devId);
-    }
-  }
+  for (devId = 1; devId < 4; devId++)
+    if ((deviceMap & (1 << devId)) != 0) *slavesMap |= (1 << devId);
 
-  return retVal;
+  return retVal; // return success
 }

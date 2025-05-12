@@ -29,6 +29,8 @@ void read_mimo_config(toml_table_t* configfile, devConfig_t *config) {
         // [PROFILE CONFIGURATION]
         toml_table_t *profile = toml_table_in(mimo, "profile");
         if (profile != NULL) {
+
+            // Profile ID
             data = toml_int_in(profile, "id");
             if (data.ok) {
                 config->profileCfg.profileId = (uint16_t)data.u.i;
