@@ -163,10 +163,10 @@ scp root@192.168.33.180:/mnt/ssd/outdoor0 /home/user/rwu-radar
 
 The structure of the repository is as follows:
 
-* config
-    * short-range-cfg.toml
-    * very-short-range-cfg.toml
-* other stuff
+* [TOML configuration files](/config/)
+* [CLI argument option parser](/opt/)
+* [Makefile](/makefile)
+* [Executable CLI](/mmwave)
 
 
 ```txt
