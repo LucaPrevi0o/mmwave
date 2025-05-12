@@ -5,7 +5,7 @@ public class Main {
     private final static int DEFAULT_PORT = 5001;
     private final static int DEFAULT_RECORD_TIME = 30;
 
-    private static final ArgParser argParser = new ArgParser("mmWave", "1.0", "mmWave CLI");
+    private static final ArgParser argParser = new ArgParser("mmWave", "1.0", "Configuration and control tool for TI MMWave cascade Evaluation Module");
 
     /**
      * Set the command line arguments for the mmWave CLI.
@@ -49,14 +49,55 @@ public class Main {
     }
 
     /**
+     * Print the version of the application.
+     */
+    private static void printVersion() {
+
+        System.out.println(argParser.getName() + " - Version " + argParser.getVersion()); // Print the name and version of the application
+        System.exit(0); // Exit the program after printing version
+    }
+
+    /**
      * Application entry point.
      * @param args Command line arguments
      * @throws Exception If an error occurs during execution
      */
     public static void main(String... args) {
 
+        if (args.length == 0) { // If no arguments are provided
+            System.err.println("ERROR: No command line arguments provided. Use -h or --help for usage information."); // Print error message
+            System.exit(1); // Exit with error code
+        }
+
+        String captureDir = "";
+        String ipAddr = "";
+        int port = 0;
+        int recordTime = 0;
+
         Main.setArgs(); // Set the command line arguments
         argParser.parse(args); // Parse the command line arguments
         if (argParser.getArgument("-h").isSet()) Main.printHelp(); // Print help message
+        if (argParser.getArgument("-v").isSet()) Main.printVersion(); // Print version message
+
+        if (argParser.getArgument("-d").isSet()) // If the capture directory argument is set
+            captureDir = (String)argParser.getArgument("-d").getValue(); // Get the value of the capture directory argument
+        else captureDir = (String)argParser.getArgument("-d").getDefaultValue(); // Get the default value of the capture directory argument
+
+        if (argParser.getArgument("-i").isSet()) // If the IP address argument is set
+            ipAddr = (String)argParser.getArgument("-i").getValue(); // Get the value of the IP address argument
+        else ipAddr = (String)argParser.getArgument("-i").getDefaultValue(); // Get the default value of the IP address argument
+
+        if (argParser.getArgument("-p").isSet()) // If the port argument is set
+            port = (int)argParser.getArgument("-p").getValue(); // Get the value of the port argument
+        else port = (int)argParser.getArgument("-p").getDefaultValue(); // Get the default value of the port argument
+
+        if (argParser.getArgument("-t").isSet()) // If the record time argument is set
+            recordTime = (int)argParser.getArgument("-t").getValue(); // Get the value of the record time argument
+        else recordTime = (int)argParser.getArgument("-t").getDefaultValue(); // Get the default value of the record time argument
+
+        System.out.println("Capture Directory: " + captureDir); // Print the capture directory
+        System.out.println("IP Address: " + ipAddr); // Print the IP address
+        System.out.println("Port: " + port); // Print the port number
+        System.out.println("Record Time: " + recordTime); // Print the record time
     }
 }

@@ -49,6 +49,8 @@ public class ArgParser {
             private String argl; // Long name of the option
             private String help; // Help description of the option
             private Type type;   // Type of the option (STRING, INTEGER, FLOAT, BOOLEAN)
+
+            private Object value; // Value of the option
             private Object defaultValue; // Default value of the option
 
             /**
@@ -88,8 +90,10 @@ public class ArgParser {
         public String getArgl() { return this.cliOption.argl; } // Get the long name of the option
         public String getHelp() { return this.cliOption.help; } // Get the help description of the option
         public Type getType() { return this.cliOption.type; } // Get the type of the option
+        public Object getValue() { return this.cliOption.value; } // Get the value of the option
         public Object getDefaultValue() { return this.cliOption.defaultValue; } // Get the default value of the option
 
+        public void setValue(Object value) { this.cliOption.value = value; } // Set the value of the option
         public void setDefaultValue(Object defaultValue) { this.cliOption.defaultValue = defaultValue; } // Set the default value of the option
 
         @Override
@@ -173,12 +177,12 @@ public class ArgParser {
                     switch (argument.getType()) { // Set the value based on the type
                         case STRING:
 
-                            argument.setDefaultValue(args[i + 1]); // Set the default value to the next argument
+                            argument.setValue(args[i + 1]); // Set the default value to the next argument
                             break;
                         case INTEGER:
 
                             try {
-                                argument.setDefaultValue(Integer.parseInt(args[i + 1])); // Set the default value to the next argument as an integer
+                                argument.setValue(Integer.parseInt(args[i + 1])); // Set the default value to the next argument as an integer
                             } catch (NumberFormatException e) {
                                 throw new IllegalArgumentException("Invalid integer value: " + args[i + 1]); // Print error message if parsing fails
                                 //System.err.println("Invalid integer value: " + args[i + 1]); // Print error message if parsing fails
@@ -187,7 +191,7 @@ public class ArgParser {
                         case FLOAT:
 
                             try {
-                                argument.setDefaultValue(Float.parseFloat(args[i + 1])); // Set the default value to the next argument as a float
+                                argument.setValue(Float.parseFloat(args[i + 1])); // Set the default value to the next argument as a float
                             } catch (NumberFormatException e) {
                                 throw new IllegalArgumentException("Invalid float value: " + args[i + 1]); // Print error message if parsing fails
                                 //System.err.println("Invalid float value: " + args[i + 1]); // Print error message if parsing fails
