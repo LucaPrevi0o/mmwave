@@ -627,6 +627,38 @@ int main (int argc, char *argv[]) {
   config.lpmCfg = lpmCfgArgs;
   config.miscCfg = miscCfgArgs;
 
+  printf("Config frameCfg numAdcSamples: %u\n", config.frameCfg.numAdcSamples);
+  printf("Config frameCfg numLoops: %u\n", config.frameCfg.numLoops);
+  printf("Config frameCfg numFrames: %u\n", config.frameCfg.numFrames);
+  printf("Config frameCfg chirpStartIdx: %u\n", config.frameCfg.chirpStartIdx);
+  printf("Config frameCfg chirpEndIdx: %u\n", config.frameCfg.chirpEndIdx);
+  printf("Config frameCfg framePeriodicity: %u\n", config.frameCfg.framePeriodicity);
+  printf("Config frameCfg numFrames: %u\n", config.frameCfg.numFrames);
+  printf("Config frameCfg frameTriggerDelay: %u\n", config.frameCfg.frameTriggerDelay);
+  printf("\n");
+
+  printf("Config profileCfg numAdcSamples: %u\n", config.profileCfg.numAdcSamples);
+  printf("Config profileCfg startFreqConst: %u\n", config.profileCfg.startFreqConst);
+  printf("Config profileCfg freqSlopeConst: %u\n", config.profileCfg.freqSlopeConst);
+  printf("Config profileCfg idleTimeConst: %u\n", config.profileCfg.idleTimeConst);
+  printf("Config profileCfg adcStartTimeConst: %u\n", config.profileCfg.adcStartTimeConst);
+  printf("Config profileCfg rampEndTime: %u\n", config.profileCfg.rampEndTime);
+  printf("Config profileCfg digOutSampleRate: %u\n", config.profileCfg.digOutSampleRate);
+  printf("Config profileCfg txOutPowerBackoffCode: %u\n", config.profileCfg.txOutPowerBackoffCode);
+  printf("Config profileCfg txPhaseShifter: %u\n", config.profileCfg.txPhaseShifter);
+  printf("Config profileCfg txStartTime: %u\n", config.profileCfg.txStartTime);
+  printf("Config profileCfg hpfCornerFreq1: %u\n", config.profileCfg.hpfCornerFreq1);
+  printf("Config profileCfg hpfCornerFreq2: %u\n", config.profileCfg.hpfCornerFreq2);
+  printf("Config profileCfg rxGain: %u\n", config.profileCfg.rxGain);
+  printf("\n");
+
+  printf("Config channelCfg rxChannelEn: %u\n", config.channelCfg.rxChannelEn);
+  printf("Config channelCfg txChannelEn: %u\n", config.channelCfg.txChannelEn);
+  printf("Config channelCfg cascading: %u\n", config.channelCfg.cascading);
+  printf("Config channelCfg cascadingPinoutCfg: %u\n", config.channelCfg.cascadingPinoutCfg);
+  printf("\n");
+
+
   if (config_filename != NULL) {
     // Read parameters from config file
     read_config(config_filename, &config);

@@ -2491,9 +2491,14 @@ int MMWL_DeviceDeInit(unsigned int deviceMap) {
  * @param deviceMap All cascaded device map
  * @return int Initialization status
  */
-int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, uint8_t deviceMap) {
+int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, unsigned char deviceMap) {
+
+  printf("\nMMWL_TDAInit: TDA board initialization\n");
   int retVal = RL_RET_CODE_OK;
   int timeOutCnt = 0;
+
+  printf("INFO: Connecting to TDA board with IP address %s and port %u \n", ipAddr, port);
+  printf("INFO: Device map %u \n", deviceMap);
 
   /* Register Async event handler with TDA */
   retVal = registerTDAStatusCallback((TDA_EVENT_HANDLER)TDA_asyncEventHandler);
@@ -2549,7 +2554,7 @@ int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, uint8_t deviceMap) {
  * @note The first device (ID 0) in the map must be the master device. It should always be set.
  * @return int 
  */
-int MMWL_AssignDeviceMap(unsigned char deviceMap, uint8_t* masterMap, uint8_t* slavesMap) {
+int MMWL_AssignDeviceMap(unsigned char deviceMap, unsigned char* masterMap, unsigned char* slavesMap) {
 
   int retVal = RL_RET_CODE_OK; // default return code
   unsigned char devId = 0; // device ID
@@ -2567,6 +2572,8 @@ int MMWL_AssignDeviceMap(unsigned char deviceMap, uint8_t* masterMap, uint8_t* s
   // ID 1-3: slaves
   for (devId = 1; devId < 4; devId++)
     if ((deviceMap & (1 << devId)) != 0) *slavesMap |= (1 << devId);
+
+  printf("Device map: %u, Master: %u, Slaves: %u\n", deviceMap, *masterMap, *slavesMap);
 
   return retVal; // return success
 }

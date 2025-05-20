@@ -379,8 +379,13 @@ STATUS Radar_processData(Radar_EthDataPacketPrms *pDataPacket_ptr, uint32_t prmS
 *
 *   @return int Success - 0, Failure - Error Code
 */
-STATUS ethernetConnect(unsigned char *ipAddr, uint32_t configPort, uint32_t deviceMap) {
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+
+STATUS ethernetConnect(unsigned char *ipAddr, unsigned int configPort, unsigned int deviceMap) {
+
+  printf("\nethernetConnect: TDA board connection\n");
+  printf("INFO: Connecting to TDA board with IP address %s and port %u \n", ipAddr, configPort);
+  printf("INFO: Device map %u \n", deviceMap);
+  signed int status = SYSTEM_LINK_STATUS_SOK;
 
   // Initializing Network parameters
   memset(&gNetworkTDA_obj, 0, sizeof(gNetworkTDA_obj));
@@ -391,6 +396,9 @@ STATUS ethernetConnect(unsigned char *ipAddr, uint32_t configPort, uint32_t devi
   }
 
   strncpy(gNetworkTDA_obj.ipAddr, ipAddr, strlen(ipAddr));
+
+  printf("INFO: IP Address: %s\n", gNetworkTDA_obj.ipAddr);
+  printf("INFO: Server Port: %u\n", gNetworkTDA_obj.serverPort);
 
   //Initializing sockets
   Network_init();
@@ -889,6 +897,9 @@ STATUS TDAregisterCallback(uint8_t devSelection, EVENT_HANDLER RF_EventCallback,
 *   @return int Success - 0, Failure - Error Code
 */
 STATUS registerTDAStatusCallback(TDA_EVENT_HANDLER TDACard_EventCallback) {
+
+  printf("\nregisterTDAStatusCallback\n");
+  printf("TDACard_EventCallback = %p\n", TDACard_EventCallback);
   int32_t status = SYSTEM_LINK_STATUS_SOK;
 
   if (TDACard_EventCallback == NULL) {
@@ -897,6 +908,8 @@ STATUS registerTDAStatusCallback(TDA_EVENT_HANDLER TDACard_EventCallback) {
   }
 
   gTDACARD_Callback = TDACard_EventCallback;
+  printf("gTDACARD_Callback = %p\n", gTDACARD_Callback);
+
 
   return status;
 }
