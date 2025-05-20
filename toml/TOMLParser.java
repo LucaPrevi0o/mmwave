@@ -1,4 +1,4 @@
-package java.toml;
+package toml;
 
 public class TOMLParser {
 

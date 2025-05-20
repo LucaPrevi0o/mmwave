@@ -1,13 +1,30 @@
-package java;
-
-import java.arg.ArgParser;
+import arg.ArgParser;
+import java.net.Socket;
 
 public class Main {
 
-    private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture_" + System.currentTimeMillis();
+    private static String getDefaultCaptureDir() {
+
+        var dir = "MMWL_Capture_";
+        dir += String.valueOf(java.time.LocalDate.now().getYear()) + "_";
+        dir += String.valueOf(java.time.LocalDate.now().getMonthValue()) + "_";
+        dir += String.valueOf(java.time.LocalDate.now().getDayOfMonth()) + "_";
+        dir += String.valueOf(java.time.LocalTime.now().getHour()) + "h";
+        dir += String.valueOf(java.time.LocalTime.now().getMinute()) + "m";
+        dir += String.valueOf(java.time.LocalTime.now().getSecond()) + "s";
+        return dir;
+    }
+
+    private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture_" + Main.getDefaultCaptureDir();
     private final static String DEFAULT_IP_ADDR = "192.168.33.180";
     private final static int DEFAULT_PORT = 5001;
     private final static int DEFAULT_RECORD_TIME = 30;
+
+    private static String captureDir;
+    private static String ipAddr;
+    private static int port;
+    private static int recordTime;
+    private static Socket socket;
 
     private static final ArgParser argParser = new ArgParser("mmWave", "1.0", "Configuration and control tool for TI MMWave cascade Evaluation Module");
 
@@ -61,6 +78,24 @@ public class Main {
         System.exit(0); // Exit the program after printing version
     }
 
+    private static void initDevice(int deviceIndex) {
+
+        try { 
+
+            
+        } catch (Exception e) { // Catch any exceptions that occur during connection
+
+            System.err.println("ERROR: Failed to connect to the MMWCAS-RF-EVM board: " + e.getMessage()); // Print error message
+            System.exit(1); // Exit with error code
+        }
+    }
+
+    private static void initMaster() {
+
+        var devicesIndex = 15; // Index of the devices (15 as an example - all devices activated)
+        initDevice(devicesIndex);
+    }
+
     /**
      * Application entry point.
      * @param args Command line arguments
@@ -72,11 +107,6 @@ public class Main {
             System.err.println("ERROR: No command line arguments provided. Use -h or --help for usage information."); // Print error message
             System.exit(1); // Exit with error code
         }
-
-        String captureDir = "";
-        String ipAddr = "";
-        int port = 0;
-        int recordTime = 0;
 
         Main.setArgs(); // Set the command line arguments
         argParser.parse(args); // Parse the command line arguments
@@ -103,5 +133,18 @@ public class Main {
         System.out.println("IP Address: " + ipAddr); // Print the IP address
         System.out.println("Port: " + port); // Print the port number
         System.out.println("Record Time: " + recordTime); // Print the record time
+
+        if (argParser.getArgument("-c").isSet()) try { // If the configure argument is set
+
+            System.out.println("Configuring the MMWCAS-RF-EVM board..."); // Print configuration message
+            socket = new Socket(ipAddr, port); // Connect to the MMWCAS-RF-EVM board
+            System.out.println("Connected to the MMWCAS-RF-EVM board at " + ipAddr + ":" + port); // Print connection message
+            
+            Main.initMaster();
+        } catch (Exception e) { // Catch any exceptions that occur during configuration
+
+            System.err.println("ERROR: Failed to configure the MMWCAS-RF-EVM board: " + e.getMessage()); // Print error message
+            System.exit(1); // Exit with error code
+        }
     }
 }

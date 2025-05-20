@@ -1,4 +1,4 @@
-package java.arg;
+package arg;
 import java.util.Iterator;
 
 /**
