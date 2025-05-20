@@ -2044,7 +2044,12 @@ int MMWL_ApllSynthBwConfig(unsigned char deviceMap) {
  * @param sopTimeout - Timeout after setting SOP mode in ms
  * @return int 
  */
-int MMWL_DevicePowerUp(unsigned char deviceMap, uint32_t rlClientCbsTimeout, uint32_t sopTimeout) {
+int MMWL_DevicePowerUp(unsigned char deviceMap, unsigned int rlClientCbsTimeout, unsigned int sopTimeout) {
+
+  printf("\nMMWL_DevicePowerUp\n");
+  printf("deviceMap: %u\n", deviceMap);
+  printf("rlClientCbsTimeout: %u\n", rlClientCbsTimeout);
+  printf("sopTimeout: %u\n", sopTimeout);
   int retVal = RL_RET_CODE_OK;
   TDADevHandle_t TDAImpl_devHdl = NULL;
   unsigned int devId = getDevIdFromDevMap(deviceMap);

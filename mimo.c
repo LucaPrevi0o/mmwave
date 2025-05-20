@@ -249,12 +249,27 @@ void check(int status, const char *success_msg, const char *error_msg,
 
 
 int32_t initMaster(rlChanCfg_t channelCfg, rlAdcOutCfg_t adcOutCfg) {
+
+  printf("\ninitMaster: Initializing master device...\n");
   const unsigned int masterId = 0;
   const unsigned int masterMap = 1 << masterId;
   int status = 0;
 
   // master chip
   channelCfg.cascading = 1;
+  printf("Master ID: %u\n", masterId);
+  printf("Master map: %u\n", masterMap);
+  printf("Channel config - Cascading: %u\n", channelCfg.cascading);
+  printf("Channel config - RX channels: %u\n", channelCfg.rxChannelEn);
+  printf("Channel config - TX channels: %u\n", channelCfg.txChannelEn);
+  printf("Channel config - Cascading pinout config: %u\n", channelCfg.cascadingPinoutCfg);
+  printf("ADC output config - Format: %u\n", adcOutCfg.fmt.b2AdcOutFmt);
+  printf("ADC output config - Bits: %u\n", adcOutCfg.fmt.b2AdcBits);
+  printf("ADC output config - Full scale reduction factor: %u\n", adcOutCfg.fmt.b8FullScaleReducFctr);
+  printf("ADC output config - Reserved B14: %u\n", adcOutCfg.fmt.b14Reserved1);
+  printf("ADC output config - Reserved B6: %u\n", adcOutCfg.fmt.b6Reserved0);
+  printf("ADC output config - Reserved 0: %u\n", adcOutCfg.reserved0);
+  printf("ADC output config - Reserved 1: %u\n", adcOutCfg.reserved1);
 
   status += MMWL_DevicePowerUp(masterMap, 1000, 1000);
   check(status,
@@ -343,6 +358,62 @@ int32_t initSlaves(rlChanCfg_t channelCfg, rlAdcOutCfg_t adcOutCfg) {
 
 
 uint32_t configure (devConfig_t config) {
+
+  printf("\nconfigure - here i should expect all the config block from inside the main\n");
+  printf("Device map: %u\n", config.deviceMap);
+  printf("Master map: %u\n", config.masterMap);
+  printf("Slaves map: %u\n", config.slavesMap);
+  printf("Chirp config - Profile id: %u\n", config.chirpCfg.profileId);
+  printf("Chirp config - Tx enable: %u\n", config.chirpCfg.txEnable);
+  printf("Chirp config - ADC start time var: %u\n", config.chirpCfg.adcStartTimeVar);
+  printf("Chirp config - Idle time var: %u\n", config.chirpCfg.idleTimeVar);
+  printf("Chirp config - Start freq var: %u\n", config.chirpCfg.startFreqVar);
+  printf("Chirp config - Freq slope var: %u\n", config.chirpCfg.freqSlopeVar);
+  printf("Chirp config - Chirp start idx: %u\n", config.chirpCfg.chirpStartIdx);
+  printf("Chirp config - Chirp end idx: %u\n", config.chirpCfg.chirpEndIdx);
+  printf("Profile config - Start freq const: %u\n", config.profileCfg.startFreqConst);
+  printf("Profile config - Freq slope const: %u\n", config.profileCfg.freqSlopeConst);
+  printf("Profile config - Idle time const: %u\n", config.profileCfg.idleTimeConst);
+  printf("Profile config - ADC start time const: %u\n", config.profileCfg.adcStartTimeConst);
+  printf("Profile config - Ramp end time: %u\n", config.profileCfg.rampEndTime);
+  printf("Profile config - Tx out power backoff code: %u\n", config.profileCfg.txOutPowerBackoffCode);
+  printf("Profile config - Tx phase shifter: %u\n", config.profileCfg.txPhaseShifter);
+  printf("Profile config - Tx start time: %u\n", config.profileCfg.txStartTime);
+  printf("Profile config - Num ADC samples: %u\n", config.profileCfg.numAdcSamples);
+  printf("Profile config - Dig out sample rate: %u\n", config.profileCfg.digOutSampleRate);
+  printf("Profile config - HPF corner freq 1: %u\n", config.profileCfg.hpfCornerFreq1);
+  printf("Profile config - HPF corner freq 2: %u\n", config.profileCfg.hpfCornerFreq2);
+  printf("Profile config - Rx gain: %u\n", config.profileCfg.rxGain);
+  printf("Frame config - Chirp start idx: %u\n", config.frameCfg.chirpStartIdx);
+  printf("Frame config - Chirp end idx: %u\n", config.frameCfg.chirpEndIdx);
+  printf("Frame config - Num frames: %u\n", config.frameCfg.numFrames);
+  printf("Frame config - Num loops: %u\n", config.frameCfg.numLoops);
+  printf("Frame config - Num ADC samples: %u\n", config.frameCfg.numAdcSamples);
+  printf("Frame config - Frame trigger delay: %u\n", config.frameCfg.frameTriggerDelay);
+  printf("Frame config - Frame periodicity: %u\n", config.frameCfg.framePeriodicity);
+  printf("Channel config - RX channel enable: %u\n", config.channelCfg.rxChannelEn);
+  printf("Channel config - TX channel enable: %u\n", config.channelCfg.txChannelEn);
+  printf("Channel config - Cascading: %u\n", config.channelCfg.cascading);
+  printf("ADC output config - Format: %u\n", config.adcOutCfg.fmt.b2AdcBits);
+  printf("ADC output config - Full scale reduction factor: %u\n", config.adcOutCfg.fmt.b8FullScaleReducFctr);
+  printf("Data format config - IQ swap select: %u\n", config.dataFmtCfg.iqSwapSel);
+  printf("Data format config - Channel interleave: %u\n", config.dataFmtCfg.chInterleave);
+  printf("Data format config - RX channel enable: %u\n", config.dataFmtCfg.rxChannelEn);
+  printf("Data format config - ADC format: %u\n", config.dataFmtCfg.adcFmt);
+  printf("Data format config - ADC bits: %u\n", config.dataFmtCfg.adcBits);
+  printf("LDO Bypass config - LDO bypass enable: %u\n", config.ldoCfg.ldoBypassEnable);
+  printf("LDO Bypass config - IO supply indicator: %u\n", config.ldoCfg.ioSupplyIndicator);
+  printf("LDO Bypass config - Supply monitor IR drop: %u\n", config.ldoCfg.supplyMonIrDrop);
+  printf("Low Power Mode config - LP ADC mode: %u\n", config.lpmCfg.lpAdcMode);
+  printf("Miscellaneous config - Misc control: %u\n", config.miscCfg.miscCtl);
+  printf("Datapath config - Interface select: %u\n", config.datapathCfg.intfSel);
+  printf("Datapath config - Transfer format packet 0: %u\n", config.datapathCfg.transferFmtPkt0);
+  printf("Datapath config - Transfer format packet 1: %u\n", config.datapathCfg.transferFmtPkt1);
+  printf("Datapath clock config - Lane clock config: %u\n", config.datapathClkCfg.laneClkCfg);
+  printf("Datapath clock config - Data rate: %u\n", config.datapathClkCfg.dataRate);
+  printf("High speed clock config - HSI clock: %u\n", config.hsClkCfg.hsiClk);
+  printf("CSI2 config - Line start end disable: %u\n", config.csi2LaneCfg.lineStartEndDis);
+  printf("CSI2 config - Lane position polarity select: %u\n", config.csi2LaneCfg.lanePosPolSel);
   int status = 0;
   status += initMaster(config.channelCfg, config.adcOutCfg);
   status += initSlaves(config.channelCfg, config.adcOutCfg);

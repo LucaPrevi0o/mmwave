@@ -1672,12 +1672,21 @@ int TDAClearDeviceCtx(TDADevCtx_t* pDevCtx) {
 
 
 TDADevHandle_t TDAGetDeviceCtx(unsigned char ucDevId) {
+
+  printf("\nTDAGetDeviceCtx\n");
+  printf("ucDevId = %d\n", ucDevId);
+  printf("TDA_NUM_CONNECTED_DEVICES_MAX = %d\n", TDA_NUM_CONNECTED_DEVICES_MAX);
   TDADevCtx_t* pDevCtx = NULL;
 
   if (ucDevId <= TDA_NUM_CONNECTED_DEVICES_MAX) {
     pDevCtx = &(gTDA_devCtx[ucDevId]);
     pDevCtx->deviceIndex = ucDevId;
   }
+
+  printf("pDevCtx - Device Index = %d\n", pDevCtx->deviceIndex);
+  printf("pDevCtx - Device Enabled = %d\n", pDevCtx->deviceEnabled);
+  printf("pDevCtx - Interrupt Masked = %d\n", pDevCtx->irqMasked);
+  printf("pDevCtx - Interface Opened = %d\n", pDevCtx->interfaceOpened);
 
   return (TDADevHandle_t)pDevCtx;
 }
@@ -2001,6 +2010,8 @@ int TDAStopIrqPollingThread(TDADevCtx_t* pDevCtx) {
 
 
 unsigned int getDevIdFromDevMap(unsigned int deviceMap) {
+
+  printf("\ngetDevIdFromDevMap\n");
   int devInd = 0;
   unsigned int devMap = deviceMap;
   while (devMap != 0) {
@@ -2012,6 +2023,7 @@ unsigned int getDevIdFromDevMap(unsigned int deviceMap) {
     }
     devMap = (devMap >> 1);
   }
+  printf("Device ID: %d\n", devInd);
   return devInd;
 }
 
