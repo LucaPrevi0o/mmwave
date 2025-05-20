@@ -56,7 +56,7 @@ public class DataPacket {
         for (var b : data) {
 
             crc ^= (b & 0xFF) << 8;
-            for (int i = 0; i < 8; i++) {
+            for (var i = 0; i < 8; i++) {
 
                 if ((crc & 0x8000) != 0) crc = (crc << 1) ^ 0x1021;
                 else crc <<= 1;
@@ -75,4 +75,6 @@ public class DataPacket {
         this.devSelection = devSelection; // Set the device selection byte
         this.ackType = ackType; // Set the ack type byte
     }
+
+    public final static DataPacket SET_SOP_MODE = new DataPacket((byte)0xAA, (short)0x0001, (byte)0x00, (short)0x0000, (byte)0x00, (byte)0x00); // Set SOP mode packet
 }
