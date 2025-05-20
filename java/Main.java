@@ -1,3 +1,7 @@
+package java;
+
+import java.arg.ArgParser;
+
 public class Main {
 
     private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture_" + System.currentTimeMillis();
@@ -92,8 +96,8 @@ public class Main {
         else port = (int)argParser.getArgument("-p").getDefaultValue(); // Get the default value of the port argument
 
         if (argParser.getArgument("-t").isSet()) // If the record time argument is set
-            recordTime = (int)argParser.getArgument("-t").getValue(); // Get the value of the record time argument
-        else recordTime = (int)argParser.getArgument("-t").getDefaultValue(); // Get the default value of the record time argument
+            recordTime = (int)argParser.getArgument("-t").getValue() * 1000; // Get the value of the record time argument
+        else recordTime = (int)argParser.getArgument("-t").getDefaultValue() * 1000; // Get the default value of the record time argument
 
         System.out.println("Capture Directory: " + captureDir); // Print the capture directory
         System.out.println("IP Address: " + ipAddr); // Print the IP address
