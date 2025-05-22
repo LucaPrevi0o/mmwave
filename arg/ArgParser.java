@@ -144,16 +144,16 @@ public class ArgParser {
     }
 
     /**
-     * Retrieves the command line argument with the specified short name.
-     * @param args Short name of the argument
+     * Retrieves the command line argument with the specified name.
+     * @param arg Name of the argument (either short or long)
      * @return The Argument object if found, <code>null</code> otherwise
      */
-    public Argument getArgument(String args) {
+    public Argument getArgument(String arg) {
 
         Argument current = head; // Start from the head of the list
         while (current != null) { // Traverse the list
 
-            if (current.cliOption.args.equals(args)) return current; // Return the argument if found
+            if (current.cliOption.args.equals(arg) || current.cliOption.argl.equals(arg)) return current; // Return the argument if found
             current = current.next; // Move to the next argument
         }
         return null; // Return null if not found
