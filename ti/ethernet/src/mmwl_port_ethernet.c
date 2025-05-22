@@ -761,7 +761,9 @@ STATUS readHWVersion() {
 *   @return int Success - 0, Failure - Error Code
 */
 STATUS readDLLVersion() {
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+
+  printf("\nreadDLLVersion: TDA binary image version\n");
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   pDataPacket[4].ackType = ACK_ON_PROCESS;
   pDataPacket[4].devSelection = 32;
   status = Radar_formEthDataPacket(
@@ -940,7 +942,10 @@ STATUS registerTDAStatusCallback(TDA_EVENT_HANDLER TDACard_EventCallback) {
 *   @return int Success - 0, Failure - Error Code
 */
 STATUS startTrace(unsigned char *filename) {
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+
+  printf("\nstartTrace: Start trace file\n");
+  printf("INFO: Trace file name %s \n", filename);
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   pDataPacket[4].ackType = ACK_ON_PROCESS;
   pDataPacket[4].devSelection = 32;
   DEBUG_PRINT("# INFO: Sending trace file name : %s , Length : %d\n", filename, \
