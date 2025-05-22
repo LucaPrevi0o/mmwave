@@ -2561,6 +2561,8 @@ int MMWL_TDAInit(unsigned char *ipAddr, unsigned int port, unsigned char deviceM
  */
 int MMWL_AssignDeviceMap(unsigned char deviceMap, unsigned char* masterMap, unsigned char* slavesMap) {
 
+  printf("\nMMWL_AssignDeviceMap: Assign device map\n");
+
   int retVal = RL_RET_CODE_OK; // default return code
   unsigned char devId = 0; // device ID
   *slavesMap = 0; //returned map
@@ -2578,7 +2580,9 @@ int MMWL_AssignDeviceMap(unsigned char deviceMap, unsigned char* masterMap, unsi
   for (devId = 1; devId < 4; devId++)
     if ((deviceMap & (1 << devId)) != 0) *slavesMap |= (1 << devId);
 
-  printf("Device map: %u, Master: %u, Slaves: %u\n", deviceMap, *masterMap, *slavesMap);
+  printf("deviceMap: %u\n", deviceMap);
+  printf("masterMap: %u\n", *masterMap);
+  printf("slavesMap: %u\n", *slavesMap);
 
   return retVal; // return success
 }

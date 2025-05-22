@@ -94,8 +94,10 @@ extern void CloseTraceFile();
 
 
 void* Network_waitConnect(void* lpParam) {
-  uint32_t *pMem;
-  uint32_t prmSize = 0;
+
+  printf("\nNetwork_waitConnect: this should be some kind of callback\n");
+  unsigned int *pMem;
+  unsigned int prmSize = 0;
   pMem = malloc(512);
 
   if (pMem == NULL) {
@@ -108,12 +110,12 @@ void* Network_waitConnect(void* lpParam) {
 
   while (TDA_NetworkThreadRunning) {
     /* Check if any information is available on the socket */
-    int32_t status = Network_waitRead(&gNetwork_SockObj);
+    signed int status = Network_waitRead(&gNetwork_SockObj);
 
     /* If information is available */
     if (status == 1) {
       /* Read header response */
-      int32_t response = RecvResponse(&prmSize);
+      signed int response = RecvResponse(&prmSize);
       if (response != SYSTEM_LINK_STATUS_SOK) {
         /* Notify mmWaveStudio about network error */
         gTDACARD_Callback(1, CAPTURE_RESPONSE_NETWORK_ERROR, 0, response, NULL);
@@ -155,10 +157,22 @@ STATUS Radar_formEthDataPacket(Radar_EthDataPacketPrms *pDataPacket,
   printf("responseCode: %d\n", responseCode);
   printf("dataLength: %d\n", dataLength);
   printf("data: %s\n", data);
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+  printf("pDataPacket->syncByte: %d\n", pDataPacket->syncByte);
+  printf("pDataPacket->opcode: %d\n", pDataPacket->opcode);
+  printf("pDataPacket->ackCode: %d\n", pDataPacket->ackCode);
+  printf("pDataPacket->dataLength: %d\n", pDataPacket->dataLength);
+  printf("pDataPacket->devSelection: %d\n", pDataPacket->devSelection);
+  printf("pDataPacket->ackType: %d\n", pDataPacket->ackType);
+  printf("pDataPacket->reserved: %d\n", pDataPacket->reserved);
+  printf("pDataPacket->data: %s\n", pDataPacket->data);
+  printf("pDevCtrlPrms->reqParam: %s\n", pDevCtrlPrms->reqParam);
+  printf("pDevCtrlPrms->reqParamSize: %d\n", pDevCtrlPrms->reqParamSize);
+  printf("pDevCtrlPrms->respParam: %s\n", pDevCtrlPrms->respParam);
+  printf("pDevCtrlPrms->respParamSize: %d\n", pDevCtrlPrms->respParamSize);
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   Radar_EthDataPacketPrms dataPacket = { 0 };
-  uint16_t crc = 0;
-  uint8_t* pDataBuf = (uint8_t*)pDevCtrlPrms->respParam;
+  unsigned short crc = 0;
+  unsigned char* pDataBuf = (unsigned char*)pDevCtrlPrms->respParam;
 
   dataPacket.syncByte = TX_SYNC_BYTE;
   dataPacket.opcode = responseCode;
@@ -405,7 +419,7 @@ STATUS ethernetConnect(unsigned char *ipAddr, unsigned int configPort, unsigned 
   printf("INFO: Server Port: %u\n", gNetworkTDA_obj.serverPort);
 
   //Initializing sockets
-  Network_init();
+  Network_init(); // not used on linux apparently
 
   //Connecting to the server
   status = ConnectToServer();
@@ -582,9 +596,12 @@ STATUS ethernetDisconnect() {
 *   @return int Success - 0, Failure - Error Code
 */
 STATUS IsConnected() {
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+
+  printf("\nIsConnected: PING command\n");
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   pDataPacket[4].ackType = ACK_ON_RECEIVE;
   pDataPacket[4].devSelection = 32;
+
   status = Radar_formEthDataPacket(&pDataPacket[4], &pDevCtrlPrms[4],
     CAPTURE_CONFIG_PING, DATA_HEADER_LENGTH,
     NULL);
@@ -2076,7 +2093,9 @@ int Network_deInit() {
 }
 
 
-int Network_connect(Network_SockObj *pObj, char *ipAddr, uint32_t port) {
+int Network_connect(Network_SockObj *pObj, char *ipAddr, unsigned int port) {
+
+  printf("\nNetwork_connect: creation of the actual socket\n");
   int sin_size;
   struct hostent *host;
   struct sockaddr_in server;
@@ -2143,9 +2162,14 @@ int Network_close(Network_SockObj *pObj) {
 }
 
 
-int Network_read(Network_SockObj *pObj, uint8_t *dataBuf, uint32_t *dataSize) {
+int Network_read(Network_SockObj *pObj, unsigned char *dataBuf, unsigned int *dataSize) {
+
+  printf("\nNetwork_read\n");
+  printf("dataSize = %d\n", *dataSize);
+  printf("dataBuf = %s\n", dataBuf);
+  printf("pObj->clientSocketId = %d\n", pObj->clientSocketId);
   int actDataSize = 0;
-  uint32_t tmpDataSize;
+  unsigned int tmpDataSize;
 
   tmpDataSize = *dataSize;
 
@@ -2200,6 +2224,9 @@ int Network_write(Network_SockObj *pObj, uint8_t *dataBuf, uint32_t dataSize) {
 
 
 int32_t Network_waitRead(Network_SockObj *pObj) {
+
+  printf("\nNetwork_waitRead\n");
+  printf("pObj->clientSocketId = %d\n", pObj->clientSocketId);
   int             status;
   fd_set          master_set;
   struct timeval timeout;
@@ -2227,6 +2254,8 @@ int32_t Network_waitRead(Network_SockObj *pObj) {
 
 
 int ConnectToServer() {
+
+  printf("\nConnectToServer\n");
   int status;
 
   DEBUG_PRINT("# INFO: Network: Connecting to the server %s:%d ...\n", \
@@ -2293,9 +2322,12 @@ int RecvResponseParams(uint8_t *pPrm, uint32_t prmSize) {
 }
 
 
-int RecvResponse(uint32_t *prmSize) {
+int RecvResponse(unsigned int *prmSize) {
+
+  printf("\nRecvResponse\n");
+  printf("prmSize = %d\n", *prmSize);
   NetworkTDA_CmdHeader cmdHeader;
-  uint32_t dataSize;
+  unsigned int dataSize;
   int status;
 
   memset(&cmdHeader, 0, sizeof(cmdHeader));
@@ -2603,6 +2635,8 @@ int32_t Bsp_ar12xxComputeCrc(uint8_t* wMbDataBaseAdd,
   uint8_t  crcLen,
   uint8_t* outCrc)
 {
+
+  //printf("\nBsp_ar12xxComputeCrc\n");
   uint16_t      hRemainder = (uint16_t)BSPDRV_AR12XX_CRC_INITIAL_REMAINDER;
   uint64_t      lDData;
   uint32_t      lDData_temp;

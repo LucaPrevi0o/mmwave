@@ -698,7 +698,7 @@ int main (int argc, char *argv[]) {
   config.lpmCfg = lpmCfgArgs;
   config.miscCfg = miscCfgArgs;
 
-  printf("Config frameCfg numAdcSamples: %u\n", config.frameCfg.numAdcSamples);
+  printf("\nConfig frameCfg numAdcSamples: %u\n", config.frameCfg.numAdcSamples);
   printf("Config frameCfg numLoops: %u\n", config.frameCfg.numLoops);
   printf("Config frameCfg numFrames: %u\n", config.frameCfg.numFrames);
   printf("Config frameCfg chirpStartIdx: %u\n", config.frameCfg.chirpStartIdx);
@@ -706,7 +706,7 @@ int main (int argc, char *argv[]) {
   printf("Config frameCfg framePeriodicity: %u\n", config.frameCfg.framePeriodicity);
   printf("Config frameCfg numFrames: %u\n", config.frameCfg.numFrames);
   printf("Config frameCfg frameTriggerDelay: %u\n", config.frameCfg.frameTriggerDelay);
-  printf("\n");
+//  printf("\n");
 
   printf("Config profileCfg numAdcSamples: %u\n", config.profileCfg.numAdcSamples);
   printf("Config profileCfg startFreqConst: %u\n", config.profileCfg.startFreqConst);
@@ -721,13 +721,13 @@ int main (int argc, char *argv[]) {
   printf("Config profileCfg hpfCornerFreq1: %u\n", config.profileCfg.hpfCornerFreq1);
   printf("Config profileCfg hpfCornerFreq2: %u\n", config.profileCfg.hpfCornerFreq2);
   printf("Config profileCfg rxGain: %u\n", config.profileCfg.rxGain);
-  printf("\n");
+  //printf("\n");
 
   printf("Config channelCfg rxChannelEn: %u\n", config.channelCfg.rxChannelEn);
   printf("Config channelCfg txChannelEn: %u\n", config.channelCfg.txChannelEn);
   printf("Config channelCfg cascading: %u\n", config.channelCfg.cascading);
   printf("Config channelCfg cascadingPinoutCfg: %u\n", config.channelCfg.cascadingPinoutCfg);
-  printf("\n");
+  //printf("\n");
 
 
   if (config_filename != NULL) {
