@@ -149,8 +149,12 @@ void* Network_waitConnect(void* lpParam) {
 */
 STATUS Radar_formEthDataPacket(Radar_EthDataPacketPrms *pDataPacket,
     DevComm_NetworkCtrlReqPrms *pDevCtrlPrms,
-    uint16_t responseCode, uint16_t dataLength, uint8_t* data) {
-
+    unsigned short responseCode, unsigned short dataLength, unsigned char* data) {
+  
+  printf("\nRadar_formEthDataPacket\n");
+  printf("responseCode: %d\n", responseCode);
+  printf("dataLength: %d\n", dataLength);
+  printf("data: %s\n", data);
   int32_t status = SYSTEM_LINK_STATUS_SOK;
   Radar_EthDataPacketPrms dataPacket = { 0 };
   uint16_t crc = 0;
@@ -1382,10 +1386,17 @@ STATUS resetDevice(TDADevHandle_t hdl) {
 *
 *   @return int Success - 0, Failure - Error Code
 */
-STATUS setSOPMode(TDADevHandle_t hdl, uint32_t SOPmode) {
+STATUS setSOPMode(TDADevHandle_t hdl, unsigned int SOPmode) {
+
+  printf("\nsetSOPMode\n");
+  printf("SOPmode = %d\n", SOPmode);
   TDADevCtx_t*    pDevCtx = (TDADevCtx_t*)hdl;
-  uint8_t devSelection = createDevMapFromDevId(pDevCtx->deviceIndex);
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+  printf("pDevCtx->deviceEnabled = %d\n", pDevCtx->deviceEnabled);
+  printf("pDevCtx->deviceIndex = %d\n", pDevCtx->deviceIndex);
+  printf("pDevCtx->interfaceOpened = %d\n", pDevCtx->interfaceOpened);
+  printf("pDevCtx->irqMasked = %d\n", pDevCtx->irqMasked);
+  unsigned char devSelection = createDevMapFromDevId(pDevCtx->deviceIndex);
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   pDataPacket[pDevCtx->deviceIndex].devSelection = devSelection;
   pDataPacket[pDevCtx->deviceIndex].ackType = ACK_ON_PROCESS;
   status = Radar_formEthDataPacket(&pDataPacket[pDevCtx->deviceIndex], \
@@ -2028,7 +2039,11 @@ unsigned int getDevIdFromDevMap(unsigned int deviceMap) {
 }
 
 unsigned int createDevMapFromDevId(unsigned int deviceId) {
+
+  printf("\ncreateDevMapFromDevId\n");
+  printf("Device ID: %d\n", deviceId);
   int devMap = 1 << deviceId;
+  printf("Device Map: %d\n", devMap);
   return devMap;
 }
 
