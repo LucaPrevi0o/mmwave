@@ -5,17 +5,21 @@ public class Main {
 
     private static String getDefaultCaptureDir() {
 
-        var dir = "MMWL_Capture_";
-        dir += String.valueOf(java.time.LocalDate.now().getYear()) + "_";
-        dir += String.valueOf(java.time.LocalDate.now().getMonthValue()) + "_";
-        dir += String.valueOf(java.time.LocalDate.now().getDayOfMonth()) + "_";
-        dir += String.valueOf(java.time.LocalTime.now().getHour()) + "h";
-        dir += String.valueOf(java.time.LocalTime.now().getMinute()) + "m";
-        dir += String.valueOf(java.time.LocalTime.now().getSecond()) + "s";
+        var dir = "MMWL_Capture_"; // Default capture directory name
+
+        var date = java.time.LocalDate.now(); // Get the current date
+        dir += date.getYear();
+        dir += (date.getMonthValue() < 10 ? "0" + date.getMonthValue() : date.getMonthValue());
+        dir += date.getDayOfMonth() + "_";
+
+        var time = java.time.LocalTime.now(); // Get the current time
+        dir += time.getHour() + "h";
+        dir += time.getMinute() + "m";
+        dir += time.getSecond() + "s";
         return dir;
     }
 
-    private final static String DEFAULT_CAPTURE_DIR = "MMWL_Capture_" + Main.getDefaultCaptureDir();
+    private final static String DEFAULT_CAPTURE_DIR = Main.getDefaultCaptureDir();
     private final static String DEFAULT_IP_ADDR = "192.168.33.180";
     private final static int DEFAULT_PORT = 5001;
     private final static int DEFAULT_RECORD_TIME = 30;
