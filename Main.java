@@ -64,10 +64,10 @@ public class Main {
         System.out.println(argParser.getName() + " - Version " + argParser.getVersion()); // Print the name and version of the application
         System.out.println(argParser.getDescription() + "\n"); // Print the description of the application
         System.out.println("Options:");
-        for (ArgParser.Argument argument : argParser.getHead()) { // Iterate through the list of arguments
+        for (var argument : argParser.getHead()) { // Iterate through the list of arguments
 
             System.out.print("  " + argument.getArgs() + " | " + argument.getArgl()); // Print the argument names
-            for (int i = argument.getArgs().length() + argument.getArgl().length() ; i < 20; i++) System.out.print(" "); // Print spaces for alignment
+            for (var i = argument.getArgs().length() + argument.getArgl().length() ; i < 20; i++) System.out.print(" "); // Print spaces for alignment
             System.out.println(argument.getHelp()); // Print the help message for the argument
         }
         System.exit(0); // Exit the program after printing help
@@ -82,19 +82,12 @@ public class Main {
         System.exit(0); // Exit the program after printing version
     }
 
-    private static void initDevice(int deviceIndex) {
+    private static void initDevice(int deviceIndex) throws Exception {
 
-        try { 
-
-            
-        } catch (Exception e) { // Catch any exceptions that occur during connection
-
-            System.err.println("ERROR: Failed to connect to the MMWCAS-RF-EVM board: " + e.getMessage()); // Print error message
-            System.exit(1); // Exit with error code
-        }
+        while (true) System.out.println(socket.getInputStream().read());
     }
 
-    private static void initMaster() {
+    private static void initMaster() throws Exception {
 
         var devicesIndex = 15; // Index of the devices (15 as an example - all devices activated)
         initDevice(devicesIndex);
@@ -142,12 +135,12 @@ public class Main {
 
             System.out.println("Configuring the MMWCAS-RF-EVM board..."); // Print configuration message
             socket = new Socket(ipAddr, port); // Connect to the MMWCAS-RF-EVM board
-            System.out.println("Connected to the MMWCAS-RF-EVM board at " + ipAddr + ":" + port); // Print connection message
+            System.out.println("Connected to the MMWCAS-RF-EVM board at [\u001B[33m" + ipAddr + "\u001B[37m : \u001B[34m" + port + "\u001B[37m]"); // Print connection message
             
             Main.initMaster();
         } catch (Exception e) { // Catch any exceptions that occur during configuration
 
-            System.err.println("ERROR: Failed to configure the MMWCAS-RF-EVM board: " + e.getMessage()); // Print error message
+            System.err.println("\u001B[31mERROR\u001B[37m: Failed to configure the MMWCAS-RF-EVM board: " + e.getMessage()); // Print error message
             System.exit(1); // Exit with error code
         }
     }
