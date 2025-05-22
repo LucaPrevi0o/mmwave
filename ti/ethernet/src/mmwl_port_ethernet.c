@@ -634,31 +634,26 @@ STATUS IsConnected() {
 *   @return int Success - 0, Failure - Error Code
 */
 STATUS ConfigureDeviceMap(uint32_t deviceMap) {
-  int32_t status = SYSTEM_LINK_STATUS_SOK;
+
+  printf("\nConfigureDeviceMap: Device map configuration\n");
+  printf("INFO: Device map %u \n", deviceMap);
+  signed int status = SYSTEM_LINK_STATUS_SOK;
   pDataPacket[4].ackType = ACK_ON_RECEIVE;
   pDataPacket[4].devSelection = 32;
 
   DEBUG_PRINT("# INFO: Sending Device Map of %d\n", deviceMap);
 
-  if ((deviceMap & 0x1) == 1)
-    gDeviceMapParams.isMasterEnable = 1;
-  else
-    gDeviceMapParams.isMasterEnable = 0;
+  if ((deviceMap & 0x1) == 1) gDeviceMapParams.isMasterEnable = 1;
+  else gDeviceMapParams.isMasterEnable = 0;
 
-  if ((deviceMap & 0x2) == 2)
-    gDeviceMapParams.isSlave1Enable = 1;
-  else
-    gDeviceMapParams.isSlave1Enable = 0;
+  if ((deviceMap & 0x2) == 2) gDeviceMapParams.isSlave1Enable = 1;
+  else gDeviceMapParams.isSlave1Enable = 0;
 
-  if ((deviceMap & 0x4) == 4)
-    gDeviceMapParams.isSlave2Enable = 1;
-  else
-    gDeviceMapParams.isSlave2Enable = 0;
+  if ((deviceMap & 0x4) == 4) gDeviceMapParams.isSlave2Enable = 1;
+  else gDeviceMapParams.isSlave2Enable = 0;
 
-  if ((deviceMap & 0x8) == 8)
-    gDeviceMapParams.isSlave3Enable = 1;
-  else
-    gDeviceMapParams.isSlave3Enable = 0;
+  if ((deviceMap & 0x8) == 8) gDeviceMapParams.isSlave3Enable = 1;
+  else gDeviceMapParams.isSlave3Enable = 0;
 
   gDeviceMapParams.numDevice = gDeviceMapParams.isMasterEnable + \
     gDeviceMapParams.isSlave1Enable + \
@@ -2204,6 +2199,11 @@ int Network_readString(Network_SockObj *pObj, uint8_t *dataBuf, uint32_t maxData
 
 
 int Network_write(Network_SockObj *pObj, uint8_t *dataBuf, uint32_t dataSize) {
+
+  printf("\nNetwork_write\n");
+  printf("dataSize = %d\n", dataSize);
+  printf("dataBuf = %s\n", dataBuf);
+  printf("pObj->clientSocketId = %d\n", pObj->clientSocketId);
   int actDataSize = 0;
 
   while (dataSize > 0) {
@@ -2280,6 +2280,10 @@ int CloseConnection() {
 
 
 int SendCommand(void *params, int prmSize) {
+
+  printf("\nSendCommand\n");
+  printf("prmSize = %d\n", prmSize);
+  printf("params = %s\n", params);
   NetworkTDA_CmdHeader cmdHeader;
   int status;
 
@@ -2349,6 +2353,10 @@ int RecvResponse(unsigned int *prmSize) {
 
 
 void handleDevCtrl(uint8_t *pDataBuf, uint32_t size) {
+
+  printf("\nhandleDevCtrl\n");
+  printf("size = %d\n", size);
+  printf("pDataBuf = %s\n", pDataBuf);
   pthread_mutex_lock(&gNetwork_Write_cs);
   SendCommand(pDataBuf, size);
   pthread_mutex_unlock(&gNetwork_Write_cs);
